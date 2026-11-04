@@ -1,0 +1,104 @@
+// Count Number of Substrings
+// You are given a string s consisting of lowercase English letters from 'a' to 'j'.
+
+// A substring is considered valid if at most one character occurs an odd number of times in that substring.
+
+// Return the total number of valid substrings in s.
+
+// A substring is a contiguous, non-empty sequence of characters within a string.
+
+// Example 1:
+// Input: s = "aba"
+
+// Output: 4
+
+// Explanation: The valid substrings are "a", "b", "a", and "aba". Each contains at most one character with an odd frequency.
+
+// Example 2:
+// Input: s = "aabb"
+
+// Output: 9
+
+// Explanation: There are 10 substrings in total. The only invalid substring is "ab", where both 'a' and 'b' occur an odd number of times. Hence, the answer is 9.
+
+
+aabb
+
+a , a , b, b, aa, ab , bb, aab, abb, aabb     
+
+
+
+Brute Force : 
+time complexity : O(n^3)
+
+class Solution {
+    boolean check(String s){
+        Map<Character , Integer> map = new HashMap<>();
+        for(char c : s.toCharArray()){
+            map.put(c , map.getOrDefault(c, 0) + 1);
+        }
+
+        int oddCount = 0;
+
+        for(int freq : map.values()){
+            if(freq % 2 == 1) oddCount++;
+
+            if(oddCount > 1) return false;
+        }
+        return true;
+    }
+    public long countSubstrings(String s) {
+        int n = s.length();
+        int result = 0;
+        for(int i=0;i<n;i++){
+            for(int j = i ;  j<n;j++){
+                if(check(s.substring(i , j+ 1))) result++;
+            }
+        }
+        return result;
+    }
+}
+
+
+Optimize : 
+
+        a   a   b   b
+        i
+            j
+
+freq[26] = a-> 2
+
+
+class Solution {
+
+    public long countSubstrings(String s) {
+
+        int n = s.length();
+        long ans = 0;
+
+        for(int i = 0; i < n; i++) {
+
+            int[] freq = new int[26];
+            int oddCount = 0;
+
+            for(int j = i; j < n; j++) {
+
+                int idx = s.charAt(j) - 'a';
+
+                freq[idx]++;
+
+                if(freq[idx] % 2 == 1) {
+                    oddCount++;
+                } else {
+                    oddCount--;
+                }
+
+                if(oddCount <= 1) {
+                    ans++;
+                }
+            }
+        }
+
+        return ans;
+    }
+}
