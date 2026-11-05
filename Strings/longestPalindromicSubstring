@@ -1,0 +1,77 @@
+
+// 5. Longest Palindromic Substring
+// Given a string s, return the longest palindromic substring in s.
+// Example 1:
+
+// Input: s = "babad"
+// Output: "bab"
+// Explanation: "aba" is also a valid answer.
+// Example 2:
+
+// Input: s = "cbbd"
+// Output: "bb"
+ 
+
+// Constraints:
+
+// 1 <= s.length <= 1000
+// s consist of only digits and English letters.
+
+Brute Force :
+1. Generate all substrings
+2. Check there are palindorme or not
+3. if yes check maxlen and starting index 
+4. return s.substring(start , start + maxLen);
+
+Here the time complexity goes to O(n^2) x O(n) ~ O(n^3);
+
+To reduce it : Optimize apporoch is :
+Observation is While checking palindrom 
+for example : "aaaaaaaaaaaa"
+we check recursively from s(0 , 12) -> (1,11) -> (2,10) -> likewise 
+
+so again when we check the for substring of it suppose aaaaaa
+
+in this we have already calculated it in larger one 
+
+So instead of computing it again and again (i.e Overlapping Problems)
+
+we can compute its one and use it again and again 
+
+i.e DP 
+
+
+class Solution {
+    public int isPalindrome(String s , int i , int j , int[][] dp){
+        if(i >= j ) return 1;
+
+        if(dp[i][j] != -1 ) return dp[i][j];
+
+        if(s.charAt(i) == s.charAt(j)) return dp[i][j] = isPalindrome(s,i+1,j-1,dp);
+
+        return dp[i][j] = 0;
+    }
+    public String longestPalindrome(String s) {
+        int n = s.length();
+        int maxLen = -1;
+        int start = 0;
+
+        int[][] dp = new int[n][n];
+
+        for(int i=0;i<n;i++){
+            Arrays.fill(dp[i] , -1);
+        }
+
+        for(int i=0;i<n;i++){
+            for(int j=i ;j<n;j++){
+                if(isPalindrome(s , i , j , dp) == 1){
+                    if((j-i+1) > maxLen){
+                        maxLen = j-i + 1;
+                        start = i;
+                    }
+                }
+            }
+        }
+        return s.substring(start , start + maxLen);
+    }
+}
